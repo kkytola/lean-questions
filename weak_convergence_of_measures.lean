@@ -559,11 +559,7 @@ def finite_measures.to_weak_dual_of_bcnn (μ : finite_measures α) :
 --TODO: Need `ℝ≥0`-module structure on `finite_measures α`.
 --      Currently only `add_comm_monoid` is implemented.
 def finite_measures.to_weak_dual_of_bounded_continuous_nn :
-  finite_measures α →L[ℝ≥0] weak_dual ℝ≥0 (α →ᵇ ℝ≥0) :=
-{ to_fun := _,
-  map_add' := _,
-  map_smul' := _,
-  cont := _ }
+  finite_measures α →L[ℝ≥0] weak_dual ℝ≥0 (α →ᵇ ℝ≥0) := sorry
 -/
 
 /-- A probability measure can be interpreted as an element of the (weak) dual of nonnegative
