@@ -660,7 +660,7 @@ end
 of probability measures: it is the requirement that the integrals of all continuous bounded
 functions against members of the sequence converge. This version is a characterization using
 nonnegative bounded continuous functions. -/
-theorem probability_measures.weak_conv_iff_test_against {γ : Type*} {F : filter γ}
+theorem probability_measures.tendsto_iff_forall_lintegral_tendsto {γ : Type*} {F : filter γ}
   {μs : γ → probability_measures α} {μ : probability_measures α} :
   tendsto μs F (𝓝 μ) ↔
   ∀ (f : α →ᵇ ℝ≥0),
