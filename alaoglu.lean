@@ -27,25 +27,6 @@ is compact in `weak_dual 𝕜 E` for `[is_R_or_C 𝕜]`.)
 -/
 
 -- Where to place?
-lemma linear_map_bound_of_unit_sphere_bound
-  {𝕜 : Type*} [is_R_or_C 𝕜] {E : Type*} [normed_group E] [normed_space 𝕜 E]
-  (c : ℝ) (f : E →ₗ[𝕜] 𝕜)
-  (h : ∀ z ∈ sphere (0 : E) 1, ∥ f z ∥ ≤ c) (z : E) : ∥ f z ∥ ≤ c * ∥ z ∥ :=
-begin
-  by_cases z_zero : z = 0,
-  { rw z_zero, simp only [linear_map.map_zero, norm_zero, mul_zero], },
-  set z₁ := (∥ z ∥⁻¹ : 𝕜) • z with hz₁,
-  have norm_f_z₁ : ∥ f z₁ ∥ ≤ c,
-  { exact h z₁ (by simp only [norm_smul_inv_norm z_zero, mem_sphere_zero_iff_norm]), },
-  have eq : f z = ∥ z ∥ * (f z₁),
-  { rw [hz₁, linear_map.map_smul, smul_eq_mul, ←mul_assoc, mul_inv_cancel, one_mul],
-    simp only [z_zero, is_R_or_C.of_real_eq_zero, norm_eq_zero, ne.def, not_false_iff], },
-  rw [eq, normed_field.norm_mul, is_R_or_C.norm_eq_abs, is_R_or_C.abs_of_real, 
-      abs_norm_eq_norm, mul_comm],
-  apply mul_le_mul norm_f_z₁ rfl.ge (norm_nonneg z) ((norm_nonneg (f z₁)).trans norm_f_z₁),
-end
-
--- Where to place?
 lemma linear_map_bound_of_sphere_bound
   {𝕜 : Type*} [is_R_or_C 𝕜] {E : Type*} [normed_group E] [normed_space 𝕜 E]
   {r : ℝ} (r_pos : 0 < r) (c : ℝ) (f : E →ₗ[𝕜] 𝕜)
@@ -76,17 +57,6 @@ begin
   apply div_le_div _ _ r_pos rfl.ge,
   { exact mul_nonneg ((norm_nonneg _).trans norm_f_z₁) (norm_nonneg z), },
   apply mul_le_mul norm_f_z₁ rfl.le (norm_nonneg z) ((norm_nonneg _).trans norm_f_z₁),
-end
-
--- Where to place?
-lemma linear_map_bound_of_unit_ball_bound
-  {𝕜 : Type*} [is_R_or_C 𝕜] {E : Type*} [normed_group E] [normed_space 𝕜 E]
-  (c : ℝ) (f : E →ₗ[𝕜] 𝕜) 
-  (h : ∀ z ∈ closed_ball (0 : E) 1, ∥ f z ∥ ≤ c) : 
-  ∀ (z : E), ∥ f z ∥ ≤ c * ∥ z ∥ :=
-begin
-  apply linear_map_bound_of_unit_sphere_bound c f,
-  exact λ z hz, h z hz.le,
 end
 
 -- Where to place? `analysis/normed_space/operator_norm`?
@@ -189,7 +159,10 @@ begin
   split, 
   { intros h,
     apply continuous_linear_map.op_norm_le_of_ball zero_lt_one zero_le_one,
-    exact λ _ _, linear_map_bound_of_unit_ball_bound 1 x'.to_normed_dual.to_linear_map h _, },
+    intros z hz,
+    have key := linear_map_bound_of_ball_bound zero_lt_one 1 x'.to_normed_dual.to_linear_map h z,
+    simp only [continuous_linear_map.to_linear_map_eq_coe, continuous_linear_map.coe_coe, div_one] at key,
+    exact key, },
   { intros h z hz,
     simp only [mem_closed_ball, dist_zero_right] at hz,
     apply (continuous_linear_map.unit_le_op_norm x'.to_normed_dual z hz).trans h, },
